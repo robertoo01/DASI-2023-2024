@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Regresión</title>
+
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .left {
+            background-color: #dce1f2;
+            width: 45%;
+            text-align: center;
+        }
+        .right {
+            background-color: #dce1f2;
+            width: 45%;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <h1>Predicción con el Modelo de Regresión</h1>
+            <form id="predictionForm">
+                <label for="feature0">Coal, Peat and Manufactured Gases:</label>
+                <input type="text" id="feature0" name="feature0" required><br><br>
+
+                <label for="feature1">Combustible Renewables:</label>
+                <input type="text" id="feature1" name="feature1" required><br><br>
+
+                <label for="feature2">Electricity:</label>
+                <input type="text" id="feature2" name="feature2" required><br><br>
+
+                <label for="feature3">Natural Gas:</label>
+                <input type="text" id="feature3" name="feature3" required><br><br>
+
+                <label for="feature4">Not Specified:</label>
+                <input type="text" id="feature4" name="feature4" required><br><br>
+
+                <label for="feature5">Nuclear:</label>
+                <input type="text" id="feature5" name="feature5" required><br><br>
+
+                <label for="feature6">Other Combustible Non-Renewables:</label>
+                <input type="text" id="feature6" name="feature6" required><br><br>
+
+                <label for="feature7">Total Combustible Fuels:</label>
+                <input type="text" id="feature7" name="feature7" required><br><br>
+
+                <label for="feature8">mes:</label>
+                <input type="text" id="feature8" name="feature8" required><br><br>
+
+                <label for="feature9">PIB_Mensual:</label>
+                <input type="text" id="feature9" name="feature9" required><br><br>
+
+                <label for="feature10">horas_sol_mes:</label>
+                <input type="text" id="feature10" name="feature10" required><br><br>
+
+                <label for="feature11">viento_medio_mes:</label>
+                <input type="text" id="feature11" name="feature11" required><br><br>
+
+                <label for="feature12">hidraulica_disponible_mes:</label>
+                <input type="text" id="feature12" name="feature12" required><br><br>
+
+                <button type="submit">Predecir</button>
+            </form>
+
+            <p id="result"></p>
+        </div>
+
+        <div class="right">
+            <h1>Predicción con el Modelo de Red Neuronal</h1>
+            <form id="predictionForm2">
+                <label for="feature0_2">Coal, Peat and Manufactured Gases:</label>
+                <input type="text" id="feature0_2" name="feature0" required><br><br>
+
+                <label for="feature1_2">Combustible Renewables:</label>
+                <input type="text" id="feature1_2" name="feature1" required><br><br>
+
+                <label for="feature2_2">Electricity:</label>
+                <input type="text" id="feature2_2" name="feature2" required><br><br>
+
+                <label for="feature3_2">Natural Gas:</label>
+                <input type="text" id="feature3_2" name="feature3" required><br><br>
+
+                <label for="feature4_2">Not Specified:</label>
+                <input type="text" id="feature4_2" name="feature4" required><br><br>
+
+                <label for="feature5_2">Nuclear:</label>
+                <input type="text" id="feature5_2" name="feature5" required><br><br>
+
+                <label for="feature6_2">Other Combustible Non-Renewables:</label>
+                <input type="text" id="feature6_2" name="feature6" required><br><br>
+
+                <label for="feature7_2">Total Combustible Fuels:</label>
+                <input type="text" id="feature7_2" name="feature7" required><br><br>
+
+                <label for="feature8_2">mes:</label>
+                <input type="text" id="feature8_2" name="feature8" required><br><br>
+
+                <label for="feature9_2">PIB_Mensual:</label>
+                <input type="text" id="feature9_2" name="feature9" required><br><br>
+
+                <label for="feature10_2">horas_sol_mes:</label>
+                <input type="text" id="feature10_2" name="feature10" required><br><br>
+
+                <label for="feature11_2">viento_medio_mes:</label>
+                <input type="text" id="feature11_2" name="feature11" required><br><br>
+
+                <label for="feature12_2">hidraulica_disponible_mes:</label>
+                <input type="text" id="feature12_2" name="feature12" required><br><br>
+
+                <button type="submit">Predecir</button>
+            </form>
+            <p id="result2"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').onsubmit = function(event) {
+            event.preventDefault();
+            var formData = new FormData(event.target);
+            var data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                body: new URLSearchParams(data),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('result').textContent = 'Predicción 1: ' + 
+                'Cantidad de GW de Hidraúlica: ' + result.prediction[0][0] + '\n' +
+                'Cantidad de GW de Solar: ' + result.prediction[0][1] + '\n' +
+                'Cantidad de GW de Eólica: ' + result.prediction[0][2] + '\n';
+            })
+            .catch(error => console.error('Error:', error));
+        };
+
+        document.getElementById('predictionForm2').onsubmit = function(event) {
+            event.preventDefault();
+            var formData = new FormData(event.target);
+            var data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            fetch('http://127.0.0.1:5000/predict2', {
+                method: 'POST',
+                body: new URLSearchParams(data),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('result2').textContent = 'Predicción 2: ' + 
+                'Cantidad de GW de Hidraúlica: ' + result.prediction[0][0] + '\n' +
+                'Cantidad de GW de Solar: ' + result.prediction[0][1] + '\n' +
+                'Cantidad de GW de Eólica: ' + result.prediction[0][2] + '\n';
+            })
+            .catch(error => console.error('Error:', error));
+        };
+    </script>
+</body>
+</html>
